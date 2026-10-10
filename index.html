@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0a0a23">
+  <title>PyCamp — интерактивный путь Python</title>
+  <style>
+    :root{
+      --navy:#0a0a23;--navy-2:#15153d;--blue:#3b82f6;--cyan:#7dd3fc;
+      --yellow:#f9c74f;--green:#2ea043;--red:#e55353;--paper:#f5f6f7;
+      --card:#fff;--ink:#1b1b32;--muted:#5c6275;--line:#d9dce5;
+      --code:#0d1117;--code-2:#161b22;--shadow:0 14px 34px rgba(10,10,35,.11);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    button,input,textarea{font:inherit}button{cursor:pointer}
+    button:disabled{cursor:not-allowed;opacity:.58;transform:none!important}
+    .topbar{height:62px;background:var(--navy);color:#fff;display:flex;align-items:center;gap:18px;padding:0 24px;position:sticky;top:0;z-index:30;box-shadow:0 2px 16px rgba(0,0,0,.25)}
+    .brand{border:0;background:transparent;color:#fff;font-size:23px;font-weight:900;letter-spacing:-1.2px;padding:0}.brand b{color:var(--yellow)}
+    .nav-link{color:#dbe5ff;border:0;background:transparent;font-size:14px;font-weight:700}.nav-link:hover{color:#fff}
+    .top-spacer{flex:1}.stat-chip{font-size:13px;font-weight:900;color:#fff;white-space:nowrap}.stat-chip strong{color:var(--yellow)}
+    .avatar{width:31px;height:31px;display:grid;place-items:center;border-radius:50%;font-size:13px;font-weight:900;color:var(--navy);background:var(--yellow)}
+    .page{max-width:1240px;margin:0 auto;padding:38px 24px 74px}
+    .hero{background:linear-gradient(118deg,#0a0a23,#1d2455 61%,#123e58);border-radius:14px;min-height:290px;overflow:hidden;position:relative;color:#fff;padding:45px clamp(27px,5vw,62px);display:flex;align-items:center}
+    .hero:after{content:"</>";font-family:Georgia,serif;color:rgba(255,255,255,.06);font-size:270px;font-weight:900;line-height:1;right:26px;bottom:-45px;position:absolute}
+    .hero-content{position:relative;z-index:1;max-width:680px}.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:1.5px;font-weight:900;color:var(--yellow)}
+    .hero h1{font-size:clamp(34px,5vw,56px);line-height:1.02;letter-spacing:-2.1px;margin:13px 0}.hero p{color:#d5e1f3;max-width:590px;line-height:1.65;margin:0;font-size:16px}
+    .btn{border:0;border-radius:4px;padding:12px 17px;font-weight:900;letter-spacing:.05px;transition:.18s}.btn:hover{transform:translateY(-2px);filter:brightness(1.04)}
+    .btn-primary{background:var(--yellow);color:var(--navy)}.btn-dark{background:var(--navy);color:#fff}.btn-outline{background:transparent;border:1px solid #99a3be;color:var(--ink)}.btn-green{background:var(--green);color:#fff}
+    .hero-actions{display:flex;gap:12px;margin-top:25px;flex-wrap:wrap}.hero-sub{font-size:12px;color:#b4c9e8;align-self:center;font-weight:700}
+    .dashboard-grid{display:grid;grid-template-columns:minmax(0,1fr) 292px;gap:23px;margin-top:28px}
+    .section-title{display:flex;align-items:end;justify-content:space-between;gap:16px;margin-bottom:15px}.section-title h2{margin:0;font-size:25px;letter-spacing:-.7px}.section-title p{margin:5px 0 0;color:var(--muted);font-size:14px}
+    .continue-card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:21px;box-shadow:var(--shadow);display:grid;grid-template-columns:64px 1fr auto;gap:17px;align-items:center;margin-bottom:30px}
+    .continue-icon{width:64px;height:64px;border-radius:9px;background:#e9efff;color:#265bcc;display:grid;place-items:center;font-size:28px}.continue-card h3{margin:0 0 5px;font-size:18px}.continue-card p{margin:0;color:var(--muted);font-size:13px}.continue-card .btn{white-space:nowrap}
+    .progress-row{display:flex;align-items:center;gap:9px;margin-top:12px;font-size:12px;font-weight:800;color:#5e6677}.bar{height:8px;border-radius:99px;overflow:hidden;background:#e8ebf1;flex:1}.bar i{display:block;height:100%;width:0;background:var(--blue);border-radius:inherit;transition:.35s}
+    .side-card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:19px;margin-bottom:16px}.side-card h3{font-size:15px;margin:0 0 14px}.goal{display:flex;align-items:center;gap:13px}.goal-ring{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--yellow) 0 0deg,#e8ebf1 0);position:relative}.goal-ring:after{content:"";width:39px;height:39px;border-radius:50%;background:#fff;position:absolute}.goal-ring b{z-index:1;font-size:12px}.goal p{margin:0;color:var(--muted);font-size:13px;line-height:1.4}.goal p strong{display:block;color:var(--ink)}
+    .streak-card{background:linear-gradient(135deg,#242451,#0a0a23);border:0;color:#fff}.streak-card h3{color:#fff}.streak-number{font-size:38px;font-weight:950;letter-spacing:-2px;line-height:1}.streak-number span{color:var(--yellow)}.streak-card p{font-size:13px;color:#c2ccec;line-height:1.5;margin:9px 0 0}.streak-days{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:17px}.streak-days i{height:8px;border-radius:99px;background:#303463}.streak-days i.on{background:var(--yellow)}
+    .xp-line{display:flex;justify-content:space-between;font-size:12px;font-weight:900;color:#596176;margin-bottom:7px}.xp-line b{color:var(--ink)}
+    .curriculum{background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}.module{border-top:1px solid var(--line)}.module:first-child{border-top:0}.module-head{padding:19px 20px;display:flex;align-items:center;gap:13px}.module-badge{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--navy);color:#fff;font-size:12px;font-weight:900}.module-title{flex:1}.module-title h3{margin:0;font-size:16px}.module-title p{margin:3px 0 0;font-size:12px;color:var(--muted)}.module-count{font-size:12px;color:#687086;font-weight:800}
+    .module-lessons{padding:0 15px 14px 67px}.lesson-row{width:100%;border:0;background:transparent;padding:11px 10px;display:flex;align-items:center;text-align:left;gap:10px;border-radius:6px;color:var(--ink)}.lesson-row:hover:not(:disabled){background:#f0f5ff}.lesson-row:disabled{color:#9ba2b0}.lesson-mark{width:20px;height:20px;border-radius:50%;border:1.5px solid #bac1ce;display:grid;place-items:center;font-size:11px;flex:none}.lesson-row.done .lesson-mark{background:var(--green);border-color:var(--green);color:#fff}.lesson-row.practice .lesson-mark{border-color:#e1ae24;color:#c88d00}.lesson-row.locked .lesson-mark{border-color:#c9ced7;color:#98a0af}.lesson-name{font-size:14px;font-weight:750;flex:1}.lesson-row.done .lesson-name{color:#476050}.lesson-meta{font-size:11px;color:#6d7686;font-weight:800}.phase{font-size:10px;letter-spacing:.6px;text-transform:uppercase;font-weight:900;padding:4px 7px;border-radius:99px;background:#edf1ff;color:#4554aa}.phase.task{background:#edf8f0;color:#16703c}
+    .course-note{padding:14px 20px;border-top:1px solid var(--line);background:#fbfcff;color:#667086;font-size:12px;line-height:1.5}.course-note b{color:var(--ink)}
+    .toast{position:fixed;z-index:100;left:50%;bottom:26px;transform:translate(-50%,130px);background:#153c2b;color:#fff;border-radius:7px;padding:13px 18px;box-shadow:var(--shadow);font-size:14px;font-weight:800;transition:.32s}.toast.show{transform:translate(-50%,0)}
+    /* Workspace */
+    .workspace{display:none;min-height:calc(100vh - 62px);background:#f4f6f9}.workspace.show{display:block}.home.hide{display:none}
+    .workspace-head{height:55px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 19px;gap:13px}.back-btn{background:transparent;border:0;color:#245fc0;font-size:14px;font-weight:900}.crumb{border-left:1px solid var(--line);padding-left:13px;color:#687086;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .workspace-grid{display:grid;grid-template-columns:330px minmax(325px,.82fr) minmax(420px,1.18fr);min-height:calc(100vh - 117px)}
+    .navigator{background:#fff;border-right:1px solid var(--line);overflow:auto}.navigator-title{padding:21px 18px 14px;font-size:13px;text-transform:uppercase;letter-spacing:1px;color:#687086;font-weight:900}.nav-task{display:flex;width:100%;border:0;background:transparent;text-align:left;gap:10px;padding:10px 17px;align-items:center;color:#30384a}.nav-task:hover:not(:disabled){background:#f1f5ff}.nav-task.current{background:#eaf1ff;color:#144eaa}.nav-task:disabled{color:#aeb5c0}.nav-dot{width:20px;height:20px;border-radius:50%;border:1.5px solid #bec6d3;display:grid;place-items:center;font-size:11px;flex:none}.nav-task.done .nav-dot{background:var(--green);color:#fff;border-color:var(--green)}.nav-task.locked .nav-dot{color:#9da4b0}.nav-task .nav-label{font-size:12px;font-weight:800;line-height:1.25}.nav-divider{height:1px;background:var(--line);margin:7px 17px}
+    .instructions{background:#fff;overflow:auto;padding:37px clamp(22px,3vw,48px)}.task-kicker{color:#235bbd;font-size:11px;font-weight:950;text-transform:uppercase;letter-spacing:1px}.task-kicker.practice{color:#bd7900}.instructions h1{font-size:31px;line-height:1.08;letter-spacing:-1.15px;margin:12px 0 17px}.instructions .intro{font-size:15px;line-height:1.68;color:#3f4858}.requirements{border:1px solid #dbe2ec;border-radius:8px;padding:16px 17px;margin-top:22px}.requirements h3{font-size:13px;margin:0 0 9px}.requirements ul{padding-left:18px;margin:0;color:#4b5565;font-size:14px;line-height:1.7}.hint-box{background:#fff8de;border-left:4px solid var(--yellow);margin-top:20px;padding:13px 15px;font-size:13px;line-height:1.55;color:#63501e}.hint-box button{color:#6a4d00;border:0;background:transparent;padding:0;font-weight:900;text-decoration:underline}.hint-text{display:none;margin-top:8px}.hint-text.show{display:block}.strict-note{font-size:12px;line-height:1.55;color:#687086;margin-top:20px}
+    .editor-area{background:var(--code);display:flex;flex-direction:column;min-width:0}.editor-top{height:47px;background:var(--code-2);border-bottom:1px solid #2d3641;color:#bdc9d7;display:flex;align-items:center;justify-content:space-between;padding:0 16px;font-size:12px;font-weight:800}.file-title:before{content:"";display:inline-block;background:#f8c54a;width:9px;height:9px;border-radius:50%;margin-right:8px}.runtime{font-size:11px;font-weight:800;color:#8ea0b4}.runtime.ready{color:#85e89d}.runtime.error{color:#ff9e9e}.editor-wrap{display:flex;min-height:335px;flex:1;position:relative;background:linear-gradient(90deg,#111923 0 48px,#0d1117 48px)}.gutter{padding:17px 8px 17px 0;width:48px;color:#677586;text-align:right;user-select:none;font:13px/1.65 "Cascadia Code",Consolas,monospace;overflow:hidden}.code-editor{flex:1;border:0;outline:0;resize:none;background:transparent;color:#dce7f2;padding:17px 17px 17px 14px;font:13px/1.65 "Cascadia Code",Consolas,monospace;tab-size:4;min-width:0}.code-editor::placeholder{color:#657789}
+    .editor-actions{padding:12px 15px;background:var(--code-2);border-top:1px solid #28323d;display:flex;gap:9px;align-items:center;flex-wrap:wrap}.editor-actions .btn{padding:10px 13px;font-size:13px}.run-btn{background:#e6edf3;color:#172130}.check-btn{background:var(--yellow);color:#17131f}.clear-btn{border:1px solid #536171;background:transparent;color:#dce7f2}.saving{font-size:11px;color:#8a9aad;margin-left:auto}
+    .console{height:224px;border-top:1px solid #2b3743;background:#090d12;padding:15px 17px;overflow:auto;font:12px/1.58 "Cascadia Code",Consolas,monospace;color:#d1dbe6}.console-title{color:#76899e;text-transform:uppercase;letter-spacing:.9px;font-size:10px;font-weight:900;margin-bottom:9px}.console .output{white-space:pre-wrap;color:#dfe9f3}.console .ok{color:#83e89b}.console .bad{color:#ff9a9a}.checks{display:grid;gap:7px;margin-top:10px}.check-line{font-family:Inter,system-ui,sans-serif;font-size:12px;font-weight:750}.check-line.ok{color:#83e89b}.check-line.bad{color:#ff9a9a}.pass-panel{font-family:Inter,system-ui,sans-serif;background:#133d2a;border:1px solid #1e6a48;padding:13px;border-radius:6px;color:#c5ffdb;font-weight:800}.pass-panel b{color:#fff}
+    .workspace-foot{height:55px;display:flex;align-items:center;justify-content:space-between;padding:0 19px;background:#fff;border-top:1px solid var(--line);gap:15px}.workspace-foot p{margin:0;color:#687086;font-size:12px;font-weight:700}.workspace-foot .btn{font-size:13px;padding:10px 14px}
+    @media(max-width:1100px){.workspace-grid{grid-template-columns:255px minmax(310px,.8fr) minmax(365px,1.2fr)}.navigator-title{padding-left:13px}.nav-task{padding-left:13px}.module-lessons{padding-left:25px}.dashboard-grid{grid-template-columns:1fr}}
+    @media(max-width:820px){.topbar{padding:0 15px;gap:11px}.nav-link{display:none}.page{padding:24px 15px 54px}.hero{padding:36px 24px;min-height:270px}.continue-card{grid-template-columns:54px 1fr}.continue-card .btn{grid-column:2;justify-self:start}.continue-icon{width:54px;height:54px}.workspace-grid{grid-template-columns:1fr}.navigator{display:none}.instructions{padding:28px 21px}.editor-area{min-height:580px}.workspace-foot p{display:none}.crumb{font-size:12px}.stat-chip:nth-last-of-type(1){display:none}}
+    @media(max-width:500px){.topbar{height:57px}.brand{font-size:20px}.top-spacer{display:none}.hero h1{font-size:34px}.hero-actions .btn{width:100%;text-align:center}.continue-card{padding:16px;gap:12px}.continue-card h3{font-size:16px}.module-head{padding:16px 13px}.module-count{display:none}.module-lessons{padding:0 7px 10px 7px}.lesson-meta{display:none}.workspace-head{padding:0 12px}.instructions h1{font-size:27px}.editor-actions .saving{width:100%;margin-left:0}.console{height:195px}}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <button class="brand" onclick="showHome()">py<b>camp</b></button>
+    <button class="nav-link" onclick="showHome()">Учебный план</button>
+    <button class="nav-link" onclick="continueLearning()">Продолжить</button>
+    <span class="top-spacer"></span>
+    <span class="stat-chip">⚡ <strong id="topXp">0 XP</strong></span>
+    <span class="stat-chip">🔥 <strong id="topStreak">0</strong></span>
+    <button class="avatar" title="Сбросить прогресс" onclick="resetProgress()">P</button>
+  </header>
+
+  <main class="home page" id="homeView">
+    <section class="hero">
+      <div class="hero-content">
+        <div class="eyebrow">Интерактивный путь · Python</div>
+        <h1>Учись писать код,<br>решая настоящие задачи.</h1>
+        <p>Сначала короткая практика, потом задания по теме с автоматическими тестами. Никаких готовых решений в редакторе — только ты, код и результат.</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary" onclick="continueLearning()" id="heroStart">Начать путь →</button>
+          <span class="hero-sub">Прогресс сохраняется в этом браузере</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="dashboard-grid">
+      <section>
+        <div class="section-title">
+          <div><h2>Твой учебный план</h2><p>Каждый модуль открывается по порядку: практика → задания → следующий навык.</p></div>
+        </div>
+        <article class="continue-card" id="continueCard">
+          <div class="continue-icon">🐍</div>
+          <div>
+            <span class="phase">Практика</span>
+            <h3 id="continueTitle">Загрузка курса…</h3>
+            <p id="continueText">Подготавливаем первое упражнение.</p>
+            <div class="progress-row"><div class="bar"><i id="courseBar"></i></div><span id="courseProgress">0 / 35</span></div>
+          </div>
+          <button class="btn btn-primary" onclick="continueLearning()">Открыть</button>
+        </article>
+        <div class="curriculum" id="curriculum"></div>
+      </section>
+      <aside>
+        <article class="side-card">
+          <h3>Цель на сегодня</h3>
+          <div class="goal"><div class="goal-ring" id="goalRing"><b id="goalText">0/3</b></div><p><strong>Реши 3 задания</strong><span id="goalHint">Начни с практики — это займёт несколько минут.</span></p></div>
+        </article>
+        <article class="side-card streak-card">
+          <h3>Серия обучения</h3>
+          <div class="streak-number">🔥 <span id="streakValue">0</span> <small style="font-size:15px;letter-spacing:0">дн.</small></div>
+          <p id="streakMessage">Реши первое задание сегодня и начни свою серию.</p>
+          <div class="streak-days" id="streakDays"></div>
+        </article>
+        <article class="side-card">
+          <div class="xp-line"><span>Уровень <b id="levelNumber">1</b></span><span id="levelLabel">0 / 150 XP</span></div>
+          <div class="bar"><i id="levelBar"></i></div>
+          <p style="margin:13px 0 0;color:var(--muted);font-size:12px;line-height:1.5">XP выдаются один раз после успешного прохождения. Повторные проверки не накручивают очки.</p>
+        </article>
+        <article class="side-card">
+          <h3>Как устроен курс</h3>
+          <p style="font-size:13px;line-height:1.6;color:var(--muted);margin:0"><b style="color:var(--ink)">1.</b> Выполни практику.<br><b style="color:var(--ink)">2.</b> Откроются задания по ней.<br><b style="color:var(--ink)">3.</b> Нажми «Проверить» — Python запустит скрытые тесты.</p>
+        </article>
+      </aside>
+    </div>
+  </main>
+
+  <section class="workspace" id="workspace">
+    <div class="workspace-head">
+      <button class="back-btn" onclick="showHome()">← К учебному плану</button>
+      <span class="crumb" id="crumb">Python</span>
+    </div>
+    <div class="workspace-grid">
+      <aside class="navigator">
+        <div class="navigator-title">Python: путь разработчика</div>
+        <div id="taskNavigator"></div>
+      </aside>
+      <article class="instructions">
+        <div class="task-kicker" id="taskKicker">Практика</div>
+        <h1 id="taskTitle">Загрузка задания…</h1>
+        <div class="intro" id="taskIntro"></div>
+        <div class="requirements"><h3>Что должно быть в решении</h3><ul id="requirements"></ul></div>
+        <div class="hint-box"><button onclick="toggleHint()">💡 Показать подсказку</button><div class="hint-text" id="hintText"></div></div>
+        <p class="strict-note">Проверка запускает код на Python и тестирует разные случаи. Названия функций и классов важны, но способ решения выбираешь ты.</p>
+      </article>
+      <section class="editor-area">
+        <div class="editor-top"><span class="file-title">main.py</span><span class="runtime" id="runtimeStatus">Подключаем Python…</span></div>
+        <div class="editor-wrap"><pre class="gutter" id="gutter">1</pre><textarea id="editor" class="code-editor" spellcheck="false" aria-label="Редактор Python" placeholder="# Пиши своё решение здесь"></textarea></div>
+        <div class="editor-actions">
+          <button class="btn run-btn" id="runButton" onclick="runSubmission()">▶ Запустить</button>
+          <button class="btn check-btn" id="checkButton" onclick="checkSubmission()">✓ Проверить решение</button>
+          <button class="btn clear-btn" onclick="clearEditor()">Очистить</button>
+          <span class="saving" id="saveStatus">Черновик сохраняется автоматически</span>
+        </div>
+        <div class="console"><div class="console-title">Консоль и проверки</div><div id="consoleOutput"><span style="color:#8a9aac">Запусти код или отправь его на проверку.</span></div></div>
+      </section>
+    </div>
+    <footer class="workspace-foot"><p id="footerStatus">Сначала пройди практику, затем откроются задания по теме.</p><button class="btn btn-dark" id="nextButton" onclick="goNext()" disabled>Следующее задание →</button></footer>
+  </section>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/pyodide/v314.0.7/full/pyodide.js"></script>
+  <script>
+    const TEST = (label, code) => ({label, code});
+    const course = [
+      {id:"basics", title:"Основы Python", time:"5 задач · синтаксис и функции", lessons:[
+        {id:"b1", phase:"practice", title:"Практика: первый вывод", xp:20, intro:"Начни с самой важной вещи: отправь строку в консоль. Не копируй готовый код — набери решение сам.", requirements:["Выведи ровно одну фразу: Python, я начинаю!","Используй стандартную функцию вывода."], hint:"Функция для вывода текста называется <code>print()</code>. Текст в Python пишут в кавычках.", tests:[TEST("Точный вывод",`assert output.strip() == "Python, я начинаю!"`)]},
+        {id:"b2", phase:"task", title:"Переменная города", xp:30, intro:"Создай переменную <b>city</b>, сохрани в ней строку <b>Казань</b> и выведи содержимое переменной.", requirements:["Переменная должна называться <code>city</code>.","В ней должна лежать строка Казань.","В консоль должно попасть значение переменной."], hint:"Сначала присвой строку переменной через знак <code>=</code>, а затем передай переменную в <code>print()</code>.", tests:[TEST("Переменная создана",`assert ns.get("city") == "Казань"`),TEST("Вывод значения",`assert output.strip() == "Казань"`)]},
+        {id:"b3", phase:"task", title:"Функция следующего года", xp:35, intro:"Напиши функцию <b>next_year(age)</b>. Она получает возраст и возвращает возраст через один год.", requirements:["Создай функцию <code>next_year</code> с одним параметром.","Функция должна <b>вернуть</b> новое значение.","Не печатай результат внутри функции."], hint:"Чтобы отдать результат из функции, используй <code>return</code>.", tests:[TEST("Базовый случай",`fn=ns.get("next_year"); assert callable(fn); assert fn(19)==20`),TEST("Нулевой возраст",`assert ns["next_year"](0)==1`),TEST("Другое значение",`assert ns["next_year"](64)==65`)]},
+        {id:"b4", phase:"task", title:"Квадрат числа", xp:35, intro:"Напиши функцию <b>square(number)</b>, которая возвращает квадрат переданного числа.", requirements:["Функция называется <code>square</code>.","Результат нужно вернуть.","Функция работает и с отрицательными числами."], hint:"Для умножения в Python используется звёздочка: <code>*</code>.", tests:[TEST("Положительное число",`fn=ns.get("square"); assert callable(fn); assert fn(7)==49`),TEST("Отрицательное число",`assert ns["square"](-4)==16`),TEST("Ноль",`assert ns["square"](0)==0`)]},
+        {id:"b5", phase:"task", title:"Чётное или нет", xp:40, intro:"Напиши функцию <b>is_even(number)</b>. Она должна вернуть <code>True</code> для чётного числа и <code>False</code> для нечётного.", requirements:["Функция называется <code>is_even</code>.","Верни логическое значение, не строку.","Проверь и положительные, и отрицательные числа."], hint:"Остаток от деления можно получить оператором <code>%</code>.", tests:[TEST("Чётное число",`fn=ns.get("is_even"); assert callable(fn); assert fn(12) is True`),TEST("Нечётное число",`assert ns["is_even"](7) is False`),TEST("Отрицательное число",`assert ns["is_even"](-8) is True`)]}
+      ]},
+      {id:"conditions", title:"Условия и ветвления", time:"5 задач · if, elif, логика", lessons:[
+        {id:"c1", phase:"practice", title:"Практика: цена билета", xp:30, intro:"Создай функцию <b>ticket_price(age)</b>. До 7 лет билет бесплатный, от 7 до 17 — 300, с 18 лет — 500.", requirements:["Функция называется <code>ticket_price</code>.","Верни число с ценой билета.","Используй условные конструкции."], hint:"Проверяй возраст от меньшего диапазона к большему: сначала «меньше 7», затем «меньше 18».", tests:[TEST("Детский билет",`fn=ns.get("ticket_price"); assert callable(fn); assert fn(6)==0`),TEST("Школьный билет",`assert ns["ticket_price"](12)==300`),TEST("Взрослый билет",`assert ns["ticket_price"](18)==500`)]},
+        {id:"c2", phase:"task", title:"Буквенная оценка", xp:45, intro:"Напиши функцию <b>grade(score)</b>: 90 и выше — A, от 75 — B, от 60 — C, ниже — F.", requirements:["Функция называется <code>grade</code>.","Верни одну латинскую букву.","Границы диапазонов должны работать точно."], hint:"Подходят несколько веток <code>elif</code>. Начинай с самой высокой оценки.", tests:[TEST("Высший балл",`fn=ns.get("grade"); assert callable(fn); assert fn(100)=="A"`),TEST("Границы",`assert ns["grade"](90)=="A" and ns["grade"](75)=="B" and ns["grade"](60)=="C"`),TEST("Низкий балл",`assert ns["grade"](42)=="F"`)]},
+        {id:"c3", phase:"task", title:"Стоимость доставки", xp:45, intro:"Напиши функцию <b>shipping_cost(total, is_member)</b>. Доставка бесплатна для участника клуба или заказа от 3000. Во всех остальных случаях стоит 300.", requirements:["Функция называется <code>shipping_cost</code>.","Верни число.","Учти оба условия бесплатной доставки."], hint:"Оператор <code>or</code> означает «или».", tests:[TEST("Участник клуба",`fn=ns.get("shipping_cost"); assert callable(fn); assert fn(100,True)==0`),TEST("Большой заказ",`assert ns["shipping_cost"](3000,False)==0`),TEST("Обычный заказ",`assert ns["shipping_cost"](2999,False)==300`)]},
+        {id:"c4", phase:"task", title:"Безопасное деление", xp:50, intro:"Напиши функцию <b>safe_divide(a, b)</b>. Она возвращает результат деления, а при делении на ноль возвращает <code>None</code>.", requirements:["Функция называется <code>safe_divide</code>.","Не допускай ошибки при нулевом делителе.","При остальных значениях верни частное."], hint:"Сначала можно проверить, равен ли второй аргумент нулю.", tests:[TEST("Обычное деление",`fn=ns.get("safe_divide"); assert callable(fn); assert fn(9,3)==3`),TEST("Дробный результат",`assert ns["safe_divide"](5,2)==2.5`),TEST("Нулевой делитель",`assert ns["safe_divide"](8,0) is None`)]},
+        {id:"c5", phase:"task", title:"Надёжный пароль", xp:55, intro:"Напиши функцию <b>is_strong_password(password)</b>. Пароль надёжный, если в нём не меньше 8 символов и есть хотя бы одна цифра.", requirements:["Функция называется <code>is_strong_password</code>.","Верни <code>True</code> или <code>False</code>.","Проверь длину и наличие цифры."], hint:"По строке можно пройти циклом <code>for</code>; у символа есть метод <code>isdigit()</code>.", tests:[TEST("Надёжный пароль",`fn=ns.get("is_strong_password"); assert callable(fn); assert fn("python2026") is True`),TEST("Короткий пароль",`assert ns["is_strong_password"]("abc123") is False`),TEST("Без цифры",`assert ns["is_strong_password"]("onlyletters") is False`)]}
+      ]},
+      {id:"loops", title:"Циклы и повторения", time:"5 задач · for и while", lessons:[
+        {id:"l1", phase:"practice", title:"Практика: сумма до числа", xp:40, intro:"Напиши функцию <b>sum_to(number)</b>, которая возвращает сумму всех чисел от 1 до указанного числа включительно.", requirements:["Функция называется <code>sum_to</code>.","Используй цикл.","Для 0 верни 0."], hint:"Функция <code>range()</code> не включает правую границу, поэтому её нужно сдвинуть на один.", tests:[TEST("Небольшое число",`fn=ns.get("sum_to"); assert callable(fn); assert fn(5)==15`),TEST("Ноль",`assert ns["sum_to"](0)==0`),TEST("Другое значение",`assert ns["sum_to"](10)==55`)]},
+        {id:"l2", phase:"task", title:"Факториал", xp:55, intro:"Напиши функцию <b>factorial(number)</b>, которая возвращает произведение всех целых чисел от 1 до number.", requirements:["Функция называется <code>factorial</code>.","Используй цикл, а не готовый модуль.","Для 0 верни 1."], hint:"Начальное значение произведения удобно сделать равным единице.", tests:[TEST("Базовый пример",`fn=ns.get("factorial"); assert callable(fn); assert fn(5)==120`),TEST("Ноль",`assert ns["factorial"](0)==1`),TEST("Другое значение",`assert ns["factorial"](7)==5040`)]},
+        {id:"l3", phase:"task", title:"Подсчёт чётных", xp:55, intro:"Напиши функцию <b>count_even(numbers)</b>, которая считает количество чётных элементов в списке.", requirements:["Функция называется <code>count_even</code>.","Верни количество, а не список.","Пустой список должен обрабатываться."], hint:"Заведи счётчик и увеличивай его при выполнении условия.", tests:[TEST("Смешанный список",`fn=ns.get("count_even"); assert callable(fn); assert fn([1,2,3,4,5,6])==3`),TEST("Нет чётных",`assert ns["count_even"]([1,3,5])==0`),TEST("Пустой список",`assert ns["count_even"]([])==0`)]},
+        {id:"l4", phase:"task", title:"Кратные трём", xp:60, intro:"Напиши функцию <b>multiples_of_three(limit)</b>, которая возвращает список положительных чисел, кратных 3 и меньших limit.", requirements:["Функция называется <code>multiples_of_three</code>.","Не включай само limit.","Верни список в порядке возрастания."], hint:"Пройдись по диапазону от 1 до limit и проверяй остаток от деления на 3.", tests:[TEST("Обычный предел",`fn=ns.get("multiples_of_three"); assert callable(fn); assert fn(10)==[3,6,9]`),TEST("Маленький предел",`assert ns["multiples_of_three"](3)==[]`),TEST("Больший предел",`assert ns["multiples_of_three"](16)==[3,6,9,12,15]`)]},
+        {id:"l5", phase:"task", title:"Обратный отсчёт", xp:60, intro:"Напиши функцию <b>countdown(start)</b>. Она должна вывести числа от start до 1, каждое с новой строки, а затем фразу «Старт!».", requirements:["Функция называется <code>countdown</code>.","Используй цикл.","Функция должна печатать результат."], hint:"Для убывающего <code>range</code> нужен отрицательный шаг.", tests:[TEST("Вывод отсчёта",`fn=ns.get("countdown"); assert callable(fn); fn(3); assert output==""`),TEST("Проверка запуска",`assert callable(ns.get("countdown"))`)]}
+      ]},
+      {id:"collections", title:"Списки и словари", time:"5 задач · данные в коллекциях", lessons:[
+        {id:"d1", phase:"practice", title:"Практика: уникальная сортировка", xp:50, intro:"Напиши функцию <b>unique_sorted(numbers)</b>, которая возвращает отсортированный список без повторов.", requirements:["Функция называется <code>unique_sorted</code>.","Не меняй исходный список.","В результате не должно быть дублей."], hint:"Множество хранит только уникальные значения. Подумай, как потом получить порядок.", tests:[TEST("Повторы удалены",`fn=ns.get("unique_sorted"); assert callable(fn); assert fn([3,1,2,3,2])==[1,2,3]`),TEST("Отрицательные числа",`assert ns["unique_sorted"]([0,-1,0,2])==[-1,0,2]`)]},
+        {id:"d2", phase:"task", title:"Второе максимальное", xp:65, intro:"Напиши функцию <b>second_largest(numbers)</b>. Верни второе по величине <b>уникальное</b> число. Если его нет, верни None.", requirements:["Функция называется <code>second_largest</code>.","Одинаковые максимальные значения не считаются двумя местами.","Обработай короткий список."], hint:"Сначала можно избавиться от повторов, а затем подумать об упорядочивании.", tests:[TEST("Обычный список",`fn=ns.get("second_largest"); assert callable(fn); assert fn([10,4,7,10,3])==7`),TEST("Нет второго значения",`assert ns["second_largest"]([5,5]) is None`),TEST("Отрицательные числа",`assert ns["second_largest"]([-1,-8,-3])==-3`)]},
+        {id:"d3", phase:"task", title:"Частота слов", xp:70, intro:"Напиши функцию <b>word_frequencies(text)</b>. Она должна вернуть словарь: слово в нижнем регистре → сколько раз оно встречается. Слова разделены пробелами.", requirements:["Функция называется <code>word_frequencies</code>.","Не учитывай регистр.","Верни словарь."], hint:"Метод <code>lower()</code> переводит строку в нижний регистр, а <code>split()</code> разбивает её на слова.", tests:[TEST("Повторяющиеся слова",`fn=ns.get("word_frequencies"); assert callable(fn); assert fn("Код код Python") == {"код":2,"python":1}`),TEST("Пустая строка",`assert ns["word_frequencies"]("")=={}`)]},
+        {id:"d4", phase:"task", title:"Объединить баллы", xp:70, intro:"Напиши функцию <b>merge_scores(first, second)</b>. Она объединяет два словаря с баллами. Если имя встречается в обоих словарях, баллы складываются.", requirements:["Функция называется <code>merge_scores</code>.","Верни новый словарь.","Не теряй уникальные ключи."], hint:"Метод <code>get(key, 0)</code> полезен, если ключа пока нет.", tests:[TEST("Есть общий ключ",`fn=ns.get("merge_scores"); assert callable(fn); assert fn({"Аня":5,"Борис":2},{"Аня":4,"Вика":3})=={"Аня":9,"Борис":2,"Вика":3}`),TEST("Пустой словарь",`assert ns["merge_scores"]({},{"Ира":7})=={"Ира":7}`)]},
+        {id:"d5", phase:"task", title:"Лучший студент", xp:75, intro:"Напиши функцию <b>top_student(scores)</b>. Она получает словарь имя → балл и возвращает имя студента с максимальным баллом.", requirements:["Функция называется <code>top_student</code>.","Верни имя, а не балл.","Считай, что словарь не пустой."], hint:"При обходе словаря методом <code>items()</code> сразу доступны и имя, и балл.", tests:[TEST("Максимальный балл",`fn=ns.get("top_student"); assert callable(fn); assert fn({"Аня":91,"Борис":87,"Вика":99})=="Вика"`),TEST("Другой набор",`assert ns["top_student"]({"Илья":1,"Маша":2})=="Маша"`)]}
+      ]},
+      {id:"strings", title:"Строки и текст", time:"5 задач · методы строк", lessons:[
+        {id:"s1", phase:"practice", title:"Практика: разворот текста", xp:50, intro:"Напиши функцию <b>reverse_text(text)</b>, которая возвращает текст в обратном порядке.", requirements:["Функция называется <code>reverse_text</code>.","Верни новую строку.","Пробелы и символы тоже нужно развернуть."], hint:"У строк есть срезы. Подумай, как задать шаг в обратную сторону.", tests:[TEST("Обычная строка",`fn=ns.get("reverse_text"); assert callable(fn); assert fn("Python")=="nohtyP"`),TEST("Строка с пробелом",`assert ns["reverse_text"]("код тут")=="тут док"`)]},
+        {id:"s2", phase:"task", title:"Палиндром", xp:65, intro:"Напиши функцию <b>is_palindrome(text)</b>. Она возвращает True, если текст читается одинаково слева направо и справа налево. Игнорируй регистр и пробелы.", requirements:["Функция называется <code>is_palindrome</code>.","Верни логическое значение.","Не учитывай пробелы и регистр."], hint:"Сначала нормализуй текст: сделай нижний регистр и убери пробелы.", tests:[TEST("Палиндром",`fn=ns.get("is_palindrome"); assert callable(fn); assert fn("А роза упала на лапу Азора") is True`),TEST("Не палиндром",`assert ns["is_palindrome"]("Python") is False`)]},
+        {id:"s3", phase:"task", title:"Гласные буквы", xp:65, intro:"Напиши функцию <b>vowel_count(text)</b>, которая считает английские гласные a, e, i, o, u без учёта регистра.", requirements:["Функция называется <code>vowel_count</code>.","Верни число.","Проверь текст в разных регистрах."], hint:"Можно хранить набор гласных в строке или множестве и проверять каждый символ.", tests:[TEST("Несколько гласных",`fn=ns.get("vowel_count"); assert callable(fn); assert fn("Education")==5`),TEST("Нет гласных",`assert ns["vowel_count"]("rhythms")==0`)]},
+        {id:"s4", phase:"task", title:"URL-имя", xp:70, intro:"Напиши функцию <b>slugify(text)</b>. Удали пробелы по краям, переведи текст в нижний регистр, а один или несколько внутренних пробелов замени на дефис.", requirements:["Функция называется <code>slugify</code>.","Верни строку без пробелов по краям.","Несколько пробелов должны стать одним дефисом."], hint:"Метод <code>split()</code> без аргумента сам разберётся с лишними пробелами.", tests:[TEST("Обычная строка",`fn=ns.get("slugify"); assert callable(fn); assert fn("Hello World")=="hello-world"`),TEST("Лишние пробелы",`assert ns["slugify"]("  Python   For  All  ")=="python-for-all"`)]},
+        {id:"s5", phase:"task", title:"Инициалы", xp:70, intro:"Напиши функцию <b>initials(name)</b>. Она получает имя из двух или более слов и возвращает заглавные первые буквы через точку.", requirements:["Функция называется <code>initials</code>.","Игнорируй лишние пробелы.","Используй заглавные буквы."], hint:"Разбей строку на слова, возьми первый символ каждого слова и соедини результат.", tests:[TEST("Два слова",`fn=ns.get("initials"); assert callable(fn); assert fn("ada lovelace")=="A.L."`),TEST("Три слова",`assert ns["initials"]("  Grace   Brewster Murray  ")=="G.B.M."`)]}
+      ]},
+      {id:"data", title:"Данные и обработка ошибок", time:"5 задач · JSON, CSV, очистка", lessons:[
+        {id:"f1", phase:"practice", title:"Практика: числа из строки", xp:60, intro:"Напиши функцию <b>parse_numbers(text)</b>. Она получает числа через запятую и возвращает список целых чисел. Пробелы около чисел нужно игнорировать.", requirements:["Функция называется <code>parse_numbers</code>.","Верни список целых чисел.","Обработай пустую строку."], hint:"Сначала разбей строку по запятой, затем очисти части от пробелов.", tests:[TEST("Числа с пробелами",`fn=ns.get("parse_numbers"); assert callable(fn); assert fn("1, 2,  30")==[1,2,30]`),TEST("Пустая строка",`assert ns["parse_numbers"]("")==[]`)]},
+        {id:"f2", phase:"task", title:"Профиль из JSON", xp:75, intro:"Напиши функцию <b>user_name(json_text)</b>. Она получает JSON-строку с ключом name и возвращает значение этого ключа.", requirements:["Функция называется <code>user_name</code>.","Используй модуль <code>json</code>.","Верни имя из данных."], hint:"Нужна функция <code>json.loads()</code>. Не забудь подключить модуль.", tests:[TEST("Чтение имени",`fn=ns.get("user_name"); assert callable(fn); assert fn('{"name":"Ada","role":"engineer"}')=="Ada"`),TEST("Другое имя",`assert ns["user_name"]('{"name":"Linus"}')=="Linus"`)]},
+        {id:"f3", phase:"task", title:"Сумма CSV", xp:80, intro:"Напиши функцию <b>csv_total(csv_text)</b>. В первой строке находятся заголовки product,price; дальше — товары и цены. Верни сумму всех цен.", requirements:["Функция называется <code>csv_total</code>.","Пропусти строку с заголовками.","Верни число."], hint:"Раздели текст на строки, а строку товара — по запятой.", tests:[TEST("Несколько товаров",`fn=ns.get("csv_total"); assert callable(fn); assert fn("product,price\\nbook,120\\npen,30")==150`),TEST("Одна строка данных",`assert ns["csv_total"]("product,price\\ncourse,999")==999`)]},
+        {id:"f4", phase:"task", title:"Чистый email", xp:75, intro:"Напиши функцию <b>clean_email(email)</b>. Удали пробелы по краям и переведи email в нижний регистр.", requirements:["Функция называется <code>clean_email</code>.","Верни строку.","Не меняй остальные символы email."], hint:"Понадобятся два строковых метода.", tests:[TEST("Пробелы и регистр",`fn=ns.get("clean_email"); assert callable(fn); assert fn("  Ada@EXAMPLE.Com ")=="ada@example.com"`),TEST("Уже чистый email",`assert ns["clean_email"]("test@mail.ru")=="test@mail.ru"`)]},
+        {id:"f5", phase:"task", title:"Группы по первой букве", xp:85, intro:"Напиши функцию <b>group_by_first(words)</b>. Она возвращает словарь: первая буква слова в нижнем регистре → список слов в исходном порядке.", requirements:["Функция называется <code>group_by_first</code>.","Не меняй порядок слов в группах.","Игнорируй регистр первой буквы."], hint:"При добавлении нового слова в список пригодится <code>setdefault()</code> или <code>get()</code>.", tests:[TEST("Несколько групп",`fn=ns.get("group_by_first"); assert callable(fn); assert fn(["Apple","ant","Book","banana"])=={"a":["Apple","ant"],"b":["Book","banana"]}`),TEST("Пустой список",`assert ns["group_by_first"]([])=={}`)]}
+      ]},
+      {id:"oop", title:"ООП и алгоритмы", time:"5 задач · классы и поиск", lessons:[
+        {id:"o1", phase:"practice", title:"Практика: счётчик", xp:70, intro:"Создай класс <b>Counter</b>. У него есть поле <code>value</code>, которое начинается с 0, и метод <code>increment()</code>, увеличивающий value на 1 и возвращающий новое значение.", requirements:["Класс должен называться <code>Counter</code>.","Начальное значение — 0.","Метод increment возвращает новое значение."], hint:"Начальное значение задают в методе <code>__init__</code> через <code>self.value</code>.", tests:[TEST("Создание объекта",`C=ns.get("Counter"); assert isinstance(C,type); c=C(); assert c.value==0`),TEST("Первое увеличение",`c=ns["Counter"](); assert c.increment()==1 and c.value==1`),TEST("Несколько увеличений",`c=ns["Counter"](); c.increment(); c.increment(); assert c.value==2`)]},
+        {id:"o2", phase:"task", title:"Прямоугольник", xp:90, intro:"Создай класс <b>Rectangle</b> с шириной и высотой. Добавь методы <code>area()</code> и <code>perimeter()</code>.", requirements:["Класс называется <code>Rectangle</code>.","Конструктор принимает width и height.","Методы возвращают площадь и периметр."], hint:"Параметры конструктора нужно сохранить у объекта через <code>self</code>.", tests:[TEST("Площадь",`C=ns.get("Rectangle"); assert isinstance(C,type); assert C(3,4).area()==12`),TEST("Периметр",`assert ns["Rectangle"](3,4).perimeter()==14`),TEST("Другие размеры",`assert ns["Rectangle"](10,2).area()==20`)]},
+        {id:"o3", phase:"task", title:"Банковский счёт", xp:95, intro:"Создай класс <b>BankAccount</b>. Конструктор получает начальный баланс. Метод <code>deposit(amount)</code> пополняет баланс. Метод <code>withdraw(amount)</code> списывает средства и возвращает True; если денег недостаточно — ничего не меняет и возвращает False.", requirements:["Класс называется <code>BankAccount</code>.","Баланс хранится в поле <code>balance</code>.","deposit возвращает новый баланс."], hint:"Перед списанием сравни amount с текущим балансом.", tests:[TEST("Пополнение",`C=ns.get("BankAccount"); assert isinstance(C,type); a=C(100); assert a.deposit(50)==150 and a.balance==150`),TEST("Успешное списание",`a=ns["BankAccount"](100); assert a.withdraw(30) is True and a.balance==70`),TEST("Недостаточно средств",`a=ns["BankAccount"](20); assert a.withdraw(50) is False and a.balance==20`)]},
+        {id:"o4", phase:"task", title:"Пузырьковая сортировка", xp:100, intro:"Напиши функцию <b>bubble_sort(numbers)</b>, которая возвращает новый отсортированный список. Используй алгоритм пузырьковой сортировки, без <code>sorted()</code> и <code>.sort()</code>.", requirements:["Функция называется <code>bubble_sort</code>.","Не используй встроенную сортировку.","Не меняй исходный список."], hint:"Сделай копию списка и несколько раз сравнивай соседние элементы.", tests:[TEST("Сортировка чисел",`fn=ns.get("bubble_sort"); assert callable(fn); assert fn([4,1,3,2])==[1,2,3,4]`),TEST("Повторы",`assert ns["bubble_sort"]([3,1,3])==[1,3,3]`),TEST("Без встроенной сортировки",`assert "sorted(" not in submission and ".sort(" not in submission`)]},
+        {id:"o5", phase:"task", title:"Бинарный поиск", xp:110, intro:"Напиши функцию <b>binary_search(numbers, target)</b> для отсортированного списка. Верни индекс target или -1, если элемента нет.", requirements:["Функция называется <code>binary_search</code>.","Используй границы поиска и середину диапазона.","Не используй <code>index()</code>."], hint:"Держи две границы: левую и правую. После сравнения с серединой сдвигай одну из них.", tests:[TEST("Элемент найден",`fn=ns.get("binary_search"); assert callable(fn); assert fn([1,3,5,7,9],7)==3`),TEST("Элемент отсутствует",`assert ns["binary_search"]([1,3,5,7,9],2)==-1`),TEST("Край списка",`assert ns["binary_search"]([2,4,6,8],2)==0 and ns["binary_search"]([2,4,6,8],8)==3`)]}
+      ]}
+    ];
+
+    const allTasks = course.flatMap((module, moduleIndex) => module.lessons.map((task, lessonIndex) => ({...task, module, moduleIndex, lessonIndex})));
+    const STORE = "pycamp-python-course-v1";
+    const blankState = () => ({completed:[], xp:0, streak:{count:0,lastDate:null}, log:{}, drafts:{}});
+    let state = loadState(), activeId = null, pyodideInstance = null, pyodidePromise = null, running = false;
+    const $ = selector => document.querySelector(selector);
+    const taskById = id => allTasks.find(task => task.id === id);
+    const taskIndex = id => allTasks.findIndex(task => task.id === id);
+
+    function loadState(){
+      try{
+        const saved = JSON.parse(localStorage.getItem(STORE));
+        return saved && Array.isArray(saved.completed) ? {...blankState(),...saved,streak:{...blankState().streak,...saved.streak},log:saved.log||{},drafts:saved.drafts||{}} : blankState();
+      }catch{return blankState()}
+    }
+    function saveState(){localStorage.setItem(STORE,JSON.stringify(state))}
+    function dateKey(date = new Date()){return [date.getFullYear(),String(date.getMonth()+1).padStart(2,"0"),String(date.getDate()).padStart(2,"0")].join("-")}
+    function dateDistance(a,b){if(!a||!b)return 999;const [ay,am,ad]=a.split("-").map(Number),[by,bm,bd]=b.split("-").map(Number);return Math.round((Date.UTC(by,bm-1,bd)-Date.UTC(ay,am-1,ad))/86400000)}
+    function visibleStreak(){return state.streak.lastDate && dateDistance(state.streak.lastDate,dateKey())<=1 ? state.streak.count : 0}
+    function isDone(task){return state.completed.includes(task.id)}
+    function isUnlocked(task){
+      const i=taskIndex(task.id);
+      return i===0 || isDone(task) || isDone(allTasks[i-1]);
+    }
+    function nextTask(){
+      return allTasks.find(task=>!isDone(task)) || null;
+    }
+    function escapeHTML(value){return String(value).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]))}
+    function toast(message){const el=$("#toast");el.textContent=message;el.classList.add("show");clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.classList.remove("show"),2800)}
+
+    function render(){
+      const current=nextTask(), complete=state.completed.length, total=allTasks.length, percent=Math.round(complete/total*100);
+      $("#topXp").textContent=`${state.xp} XP`;$("#topStreak").textContent=visibleStreak();
+      $("#courseProgress").textContent=`${complete} / ${total}`;$("#courseBar").style.width=`${percent}%`;
+      $("#heroStart").textContent=current ? (complete ? "Продолжить путь →" : "Начать путь →") : "Курс завершён ✓";
+      $("#continueTitle").textContent=current ? current.title : "Ты прошёл весь путь Python";
+      $("#continueText").textContent=current ? `${current.module.title} · ${current.phase==="practice"?"сначала практика":"задание после практики"} · +${current.xp} XP` : "Повтори любую задачу или сбрось прогресс, чтобы начать заново.";
+      const today=dateKey(), todayDone=Object.values(state.log).filter(v=>v.date===today).length, goal=Math.min(todayDone,3);
+      $("#goalText").textContent=`${goal}/3`;$("#goalRing").style.background=`conic-gradient(var(--yellow) ${goal/3*360}deg,#e8ebf1 0deg)`;
+      $("#goalHint").textContent=goal===3 ? "Цель выполнена. Отличная работа!" : `До цели осталось ${3-goal} ${3-goal===1?"задание":"задания"}.`;
+      const streak=visibleStreak();$("#streakValue").textContent=streak;$("#streakMessage").textContent=streak ? `Ты учишься ${streak} ${declension(streak,["день","дня","дней"])} подряд. Не прерывай серию!` : "Реши первое задание сегодня и начни свою серию.";
+      $("#streakDays").innerHTML=Array.from({length:7},(_,i)=>`<i class="${i>=7-Math.min(streak,7)?"on":""}"></i>`).join("");
+      const level=Math.floor(state.xp/150)+1, levelXP=state.xp%150;$("#levelNumber").textContent=level;$("#levelLabel").textContent=`${levelXP} / 150 XP`;$("#levelBar").style.width=`${levelXP/150*100}%`;
+      renderCurriculum();renderNavigator();
+    }
+    function declension(n, forms){const a=n%10,b=n%100;return b>=11&&b<=14?forms[2]:a===1?forms[0]:a>=2&&a<=4?forms[1]:forms[2]}
+    function renderCurriculum(){
+      $("#curriculum").innerHTML=course.map((module,mi)=>`<section class="module">
+        <div class="module-head"><span class="module-badge">${String(mi+1).padStart(2,"0")}</span><div class="module-title"><h3>${module.title}</h3><p>${module.time}</p></div><span class="module-count">${module.lessons.filter(task=>isDone(task)).length}/${module.lessons.length}</span></div>
+        <div class="module-lessons">${module.lessons.map(task=>{
+          const done=isDone(task), unlocked=isUnlocked(task), type=task.phase==="practice"?"practice":"task";
+          return `<button class="lesson-row ${done?"done":""} ${!unlocked?"locked":""} ${type}" ${unlocked?"":"disabled"} onclick="openTask('${task.id}')"><span class="lesson-mark">${done?"✓":unlocked?(type==="practice"?"◆":"○"):"🔒"}</span><span class="lesson-name">${task.title}</span><span class="phase ${type==="task"?"task":""}">${task.phase==="practice"?"Практика":"Задание"}</span><span class="lesson-meta">+${task.xp} XP</span></button>`;
+        }).join("")}</div>
+      </section>`).join("")+`<div class="course-note"><b>Правило курса:</b> сначала заверши практику модуля. После неё задания открываются по одному и проверяются скрытыми тестами.</div>`;
+    }
+    function renderNavigator(){
+      $("#taskNavigator").innerHTML=course.map(module=>`<div class="nav-divider"></div>${module.lessons.map(task=>{
+        const done=isDone(task), unlocked=isUnlocked(task), current=task.id===activeId;
+        return `<button ${unlocked?"":"disabled"} class="nav-task ${done?"done":""} ${!unlocked?"locked":""} ${current?"current":""}" onclick="openTask('${task.id}')"><span class="nav-dot">${done?"✓":unlocked?"":"🔒"}</span><span class="nav-label">${task.phase==="practice"?"Практика: ":""}${task.title.replace("Практика: ","")}</span></button>`;
+      }).join("")}`).join("");
+    }
+    function showHome(){
+      $("#workspace").classList.remove("show");$("#homeView").classList.remove("hide");render();window.scrollTo({top:0,behavior:"smooth"});
+    }
+    function continueLearning(){
+      const current=nextTask();
+      if(current)openTask(current.id); else {toast("Курс уже пройден — можешь повторить любое задание!");showHome()}
+    }
+    function openTask(id){
+      const task=taskById(id);if(!task||!isUnlocked(task)){toast("Сначала выполни предыдущее задание.");return}
+      activeId=id;$("#homeView").classList.add("hide");$("#workspace").classList.add("show");window.scrollTo(0,0);
+      $("#crumb").textContent=`${task.module.title} / ${task.title}`;$("#taskKicker").textContent=`${task.phase==="practice"?"Практика перед заданиями":"Задание по практике"} · +${task.xp} XP`;$("#taskKicker").className=`task-kicker ${task.phase==="practice"?"practice":""}`;
+      $("#taskTitle").textContent=task.title;$("#taskIntro").innerHTML=task.intro;$("#requirements").innerHTML=task.requirements.map(item=>`<li>${item}</li>`).join("");$("#hintText").innerHTML=task.hint;$("#hintText").classList.remove("show");$(".hint-box button").textContent="💡 Показать подсказку";
+      $("#editor").value=state.drafts[id]||"";updateGutter();$("#consoleOutput").innerHTML='<span style="color:#8a9aac">Запусти код или отправь его на проверку.</span>';
+      const done=isDone(task);$("#footerStatus").textContent=done?"Это задание уже засчитано. Можно изменить код и перепроверить его.":"Скрытые тесты проверят решение на нескольких случаях.";$("#nextButton").disabled=!done;$("#nextButton").textContent=taskIndex(id)===allTasks.length-1?"Завершить курс ✓":"Следующее задание →";
+      renderNavigator();ensurePython();
+    }
+    function toggleHint(){const hint=$("#hintText"),show=!hint.classList.contains("show");hint.classList.toggle("show",show);$(".hint-box button").textContent=show?"💡 Скрыть подсказку":"💡 Показать подсказку"}
+    function updateGutter(){const count=$("#editor").value.split("\n").length;$("#gutter").textContent=Array.from({length:count},(_,i)=>i+1).join("\n")}
+    $("#editor").addEventListener("input",event=>{updateGutter();if(activeId){state.drafts[activeId]=event.target.value;saveState();$("#saveStatus").textContent="Черновик сохранён";clearTimeout(window.saveLabel);window.saveLabel=setTimeout(()=>$("#saveStatus").textContent="Черновик сохраняется автоматически",1300)}}); 
+    $("#editor").addEventListener("keydown",event=>{if(event.key==="Tab"){event.preventDefault();const el=event.target;el.setRangeText("    ",el.selectionStart,el.selectionEnd,"end");el.dispatchEvent(new Event("input"))}});
+    $("#editor").addEventListener("scroll",event=>{$("#gutter").scrollTop=event.target.scrollTop});
+    function clearEditor(){if(!activeId)return;$("#editor").value="";state.drafts[activeId]="";saveState();updateGutter();$("#editor").focus()}
+    function setRuntime(text,kind=""){const el=$("#runtimeStatus");el.textContent=text;el.className=`runtime ${kind}`}
+    async function ensurePython(){
+      if(pyodideInstance)return pyodideInstance;
+      if(pyodidePromise)return pyodidePromise;
+      pyodidePromise=(async()=>{
+        setRuntime("Загрузка Python…");
+        try{
+          if(!window.loadPyodide)throw new Error("Не удалось загрузить среду Python");
+          pyodideInstance=await window.loadPyodide({indexURL:"https://cdn.jsdelivr.net/pyodide/v314.0.7/full/"});
+          setRuntime("Python готов", "ready");return pyodideInstance;
+        }catch(error){setRuntime("Python недоступен","error");throw error}
+      })();
+      return pyodidePromise;
+    }
+    function pythonError(trace){const lines=String(trace).trim().split("\n").filter(Boolean);return lines[lines.length-1]||"Ошибка выполнения"}
+    async function execute(code, tests=[]){
+      const pyodide=await ensurePython();
+      const testJSON=JSON.stringify(JSON.stringify(tests));
+      const script=`import contextlib, io, json, traceback
+submission = ${JSON.stringify(code)}
+tests = json.loads(${JSON.stringify(JSON.stringify(tests))})
+result = {"output": "", "error": "", "checks": [], "passed": False}
+namespace = {"__name__": "__main__"}
+stream = io.StringIO()
+try:
+    with contextlib.redirect_stdout(stream):
+        exec(compile(submission, "<main.py>", "exec"), namespace)
+    result["output"] = stream.getvalue()
+except Exception:
+    result["output"] = stream.getvalue()
+    result["error"] = traceback.format_exc()
+if not result["error"]:
+    for item in tests:
+        try:
+            exec(item["code"], {"ns": namespace, "output": result["output"], "submission": submission})
+            result["checks"].append({"label": item["label"], "ok": True})
+        except Exception:
+            result["checks"].append({"label": item["label"], "ok": False})
+result["passed"] = (not result["error"]) and all(item["ok"] for item in result["checks"])
+json.dumps(result, ensure_ascii=False)`;
+      return JSON.parse(pyodide.runPython(script));
+    }
+    function setBusy(value){running=value;$("#runButton").disabled=value;$("#checkButton").disabled=value;$("#runButton").textContent=value?"Выполняем…":"▶ Запустить";$("#checkButton").textContent=value?"Проверяем…":"✓ Проверить решение"}
+    async function runSubmission(){
+      const code=$("#editor").value;if(!code.trim()){showConsole(`<span class="bad">Напиши код перед запуском.</span>`);return}
+      setBusy(true);try{const result=await execute(code);if(result.error){showConsole(`<span class="bad">Ошибка Python: ${escapeHTML(pythonError(result.error))}</span>${result.output?`<div class="output">${escapeHTML(result.output)}</div>`:""}`)}else{showConsole(`<span class="ok">✓ Программа выполнилась</span><div class="output">${result.output?escapeHTML(result.output):"Программа не вывела текст."}</div>`)} }catch(error){showConsole(`<span class="bad">Не удалось запустить Python. Проверь подключение к интернету и перезагрузи страницу.</span>`)}finally{setBusy(false)}}
+    async function checkSubmission(){
+      const task=taskById(activeId),code=$("#editor").value;if(!code.trim()){showConsole(`<span class="bad">Сначала напиши решение в редакторе.</span>`);return}
+      setBusy(true);
+      try{
+        const result=await execute(code,task.tests);
+        if(result.error){showConsole(`<span class="bad">Ошибка Python: ${escapeHTML(pythonError(result.error))}</span>${result.output?`<div class="output">${escapeHTML(result.output)}</div>`:""}`);return}
+        const lines=result.checks.map(check=>`<div class="check-line ${check.ok?"ok":"bad"}">${check.ok?"✓":"×"} ${check.label}</div>`).join("");
+        if(result.passed){showConsole(`<div class="pass-panel">🎉 <b>Все тесты пройдены!</b><br>Задание засчитано, ${isDone(task)?"XP уже были получены ранее.":`получено +${task.xp} XP.`}</div><div class="checks">${lines}</div>`);completeTask(task)}
+        else showConsole(`<span class="bad">Не все проверки прошли. Исправь решение и попробуй ещё раз.</span><div class="checks">${lines}</div>${result.output?`<div class="output">${escapeHTML(result.output)}</div>`:""}`);
+      }catch(error){showConsole(`<span class="bad">Не удалось выполнить тесты. Проверь интернет-соединение и перезагрузи страницу.</span>`)}finally{setBusy(false)}
+    }
+    function showConsole(html){$("#consoleOutput").innerHTML=html}
+    function completeTask(task){
+      if(isDone(task)){$("#nextButton").disabled=false;return}
+      const today=dateKey(), delta=dateDistance(state.streak.lastDate,today);
+      if(!state.streak.lastDate||delta>1)state.streak.count=1;
+      else if(delta===1)state.streak.count+=1;
+      state.streak.lastDate=today;state.completed.push(task.id);state.xp+=task.xp;state.log[task.id]={date:today,xp:task.xp};saveState();
+      $("#footerStatus").textContent=`Задание пройдено! +${task.xp} XP. Следующее задание разблокировано.`;$("#nextButton").disabled=false;toast(`Задание пройдено! +${task.xp} XP · 🔥 ${visibleStreak()} дн.`);render();
+    }
+    function goNext(){
+      const i=taskIndex(activeId),next=allTasks[i+1];
+      if(next)openTask(next.id);else{showHome();toast("Поздравляем! Ты завершил весь курс Python.")}
+    }
+    function resetProgress(){
+      if(!confirm("Сбросить весь прогресс, XP, серию и черновики? Это действие нельзя отменить."))return;
+      state=blankState();saveState();activeId=null;showHome();toast("Прогресс сброшен. Можно начать с чистого листа.");
+    }
+    render();
+    ensurePython().catch(()=>{});
+  </script>
+</body>
+</html>
