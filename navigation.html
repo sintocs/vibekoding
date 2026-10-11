@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PyCamp — навигация по страницам</title>
+
+<style>
+:root{color-scheme:dark;--bg:#0d1117;--panel:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--green:#238636}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+header{border-bottom:1px solid var(--border);padding:22px 24px;background:var(--panel)}.wrap{width:min(100% - 32px,960px);margin:auto}
+.brand{display:flex;align-items:center;gap:12px;font-size:21px;font-weight:700}.logo{display:grid;place-items:center;width:38px;height:38px;border-radius:10px;background:var(--green);color:#fff;font-weight:800}
+.subtitle{color:var(--muted);margin:5px 0 0 50px;font-size:14px}main{padding:34px 0 48px}.intro{margin-bottom:22px}h1{font-size:clamp(25px,4vw,34px);margin:0 0 8px;letter-spacing:-.6px}.intro p{color:var(--muted);margin:0}
+.toolbar{display:flex;gap:12px;margin:22px 0;flex-wrap:wrap}input{flex:1 1 240px;min-width:0;padding:11px 13px;background:var(--panel);color:var(--text);border:1px solid var(--border);border-radius:7px;font:inherit;outline:none}input:focus{border-color:#58a6ff}.count{align-self:center;color:var(--muted);font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:14px}.file-card{display:flex;align-items:center;gap:13px;min-height:92px;padding:17px;border:1px solid var(--border);border-radius:10px;background:var(--panel);color:inherit;text-decoration:none;transition:border-color .15s,transform .15s,background .15s}.file-card:hover{border-color:#3fb950;background:#1b222b;transform:translateY(-2px)}
+.file-icon{flex:0 0 42px;height:42px;display:grid;place-items:center;border-radius:8px;background:#1f6feb22;color:#79c0ff;font-size:12px;font-weight:800}.file-name{font-weight:650;overflow-wrap:anywhere}.file-desc{display:block;color:var(--muted);font-size:13px;margin-top:3px}.empty{display:none;padding:25px;border:1px dashed var(--border);border-radius:9px;text-align:center;color:var(--muted)}footer{color:var(--muted);font-size:13px;text-align:center;padding-top:30px}@media(max-width:480px){header{padding:17px 0}main{padding-top:25px}.subtitle{margin-left:0}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><div class="brand"><span class="logo">P</span><span>PyCamp</span></div><p class="subtitle">Страницы и материалы об ИИ-инструментах</p></div></header>
+<main class="wrap">
+<section class="intro"><h1>Навигация по Vibekoding</h1><p>Выберите файл, чтобы открыть нужную страницу.</p></section>
+<div class="toolbar"><input id="search" type="search" placeholder="Поиск файлов…" aria-label="Поиск файлов"><span class="count" id="count" aria-live="polite"></span></div>
+<section class="grid" aria-label="Файлы проекта"><a class="file-card" href="index.html"><span class="file-icon">HTML</span><span><span class="file-name">index.html</span><span class="file-desc">Главная страница проекта</span></span></a>
+<a class="file-card" href="cursor.html"><span class="file-icon">HTML</span><span><span class="file-name">cursor.html</span><span class="file-desc">Страница Cursor</span></span></a>
+<a class="file-card" href="olama.html"><span class="file-icon">HTML</span><span><span class="file-name">olama.html</span><span class="file-desc">Страница Ollama (имя файла в репозитории — olama.html)</span></span></a>
+<a class="file-card" href="qwen.html"><span class="file-icon">HTML</span><span><span class="file-name">qwen.html</span><span class="file-desc">Страница Qwen</span></span></a>
+<a class="file-card" href="qwen1.html"><span class="file-icon">HTML</span><span><span class="file-name">qwen1.html</span><span class="file-desc">Дополнительная страница Qwen</span></span></a>
+<a class="file-card" href="z_agent.html"><span class="file-icon">HTML</span><span><span class="file-name">z_agent.html</span><span class="file-desc">Страница Z Agent</span></span></a>
+</section><div class="empty" id="empty">По вашему запросу ничего не найдено.</div><footer>PyCamp · Навигация по репозиторию vibekoding</footer>
+</main>
+<script>
+const search=document.querySelector('#search');
+const cards=[...document.querySelectorAll('.file-card')];
+const count=document.querySelector('#count');
+const empty=document.querySelector('#empty');
+function filterFiles(){const query=search.value.trim().toLowerCase();let visible=0;for(const card of cards){const matches=card.textContent.toLowerCase().includes(query);card.hidden=!matches;if(matches)visible++;}count.textContent=visible+' из '+cards.length+' файлов';empty.style.display=visible===0?'block':'none';}
+search.addEventListener('input',filterFiles);filterFiles();
+</script>
+</body>
+</html>
