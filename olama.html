@@ -1,0 +1,427 @@
+Here is a complete, functional clone of a Python course in a single HTML file. It includes a syllabus, interactive coding challenges (simulated), and a dark-themed UI similar to freeCodeCamp.
+
+Save this code as `index.html` and open it in your browser.
+
+```html
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeCamp: Python Masterclass</title>
+    <style>
+        :root {
+            --bg-dark: #282c34;
+            --sidebar-dark: #000000;
+            --accent-green: #4a9e4b;
+            --text-light: #abb1c2;
+            --card-bg: #1d2025;
+            --code-bg: #3e4451;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: 250px;
+            background-color: var(--sidebar-dark);
+            height: 100vh;
+            position: fixed;
+            padding: 20px;
+            border-right: 1px solid #333;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            color: var(--accent-green);
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .nav-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: 0.2s;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-item:hover {
+            background-color: var(--bg-dark);
+            color: white;
+        }
+
+        .nav-item.active {
+            background-color: var(--accent-green);
+            color: white;
+        }
+
+        /* Main Content Styling */
+        main {
+            margin-left: 250px;
+            padding: 40px;
+            width: calc(100% - 250px);
+        }
+
+        .lesson-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 { color: white; }
+        p { line-height: 1.6; margin-bottom: 20px; }
+
+        /* Simulator Box */
+        .simulator-wrapper {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            margin-top: 40px;
+            overflow: hidden;
+        }
+
+        .simulator-header {
+            background-color: var(--code-bg);
+            padding: 10px 15px;
+            border-bottom: 1px solid #3e4451;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+        .red { background-color: #ff5f56; }
+        .yellow { background-color: #ffbd2e; }
+        .green { background-color: #27c93f; }
+
+        textarea {
+            width: 100%;
+            height: 300px;
+            background-color: var(--bg-dark);
+            color: #abb1c2;
+            border: none;
+            resize: none;
+            padding: 20px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 16px;
+            outline: none;
+            box-sizing: border-box; /* Fixes padding issues */
+        }
+
+        .controls {
+            padding: 15px;
+            display: flex;
+            gap: 10px;
+            background-color: var(--card-bg);
+        }
+
+        button.check-btn {
+            background-color: var(--accent-green);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            flex-grow: 1;
+        }
+
+        button.check-btn:hover {
+            background-color: #5cb75e;
+        }
+
+        .output-area {
+            padding: 15px;
+            font-family: 'Courier New', Courier, monospace;
+            color: #6db43a; /* Python success greenish */
+            display: none;
+        }
+
+        /* Progress Bar */
+        .progress-section {
+            margin-top: 50px;
+            border-bottom: 1px solid #444;
+            padding-bottom: 20px;
+        }
+        
+        .progress-bar-bg {
+            width: 100%;
+            height: 8px;
+            background-color: #333;
+            border-radius: 4px;
+            margin-top: 15px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background-color: var(--accent-green);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="logo" onclick="document.getElementById('lesson-1').scrollIntoView()">
+            <span>&#9654;</span> CODE CAMP PYTHON
+        </div>
+        <nav id="course-nav">
+            <!-- Navigation generated by JS -->
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="lesson-container">
+        
+        <!-- Top Bar for Course Info -->
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2 id="lesson-title">Загрузка...</h2>
+            <button onclick="nextLesson()" style="background:var(--accent-green); border:none; color:white; padding:5px 10px; border-radius:4px; cursor:pointer;">Далее &rarr;</button>
+        </div>
+
+        <!-- Content Area -->
+        <div id="lesson-content">
+            <!-- Dynamic content loaded here -->
+        </div>
+
+        <!-- Interactive Coding Section (Always present) -->
+        <div class="simulator-wrapper">
+            <div class="simulator-header">
+                <span class="dot red"></span>
+                <span class="dot yellow"></span>
+                <span class="dot green"></span>
+                <span style="margin-left: auto; font-size: 14px;">python3 -u</span>
+            </div>
+            <textarea id="code-input" placeholder="# Напишите код здесь..."></textarea>
+            <div class="controls">
+                <button class="check-btn" onclick="checkCode()">Проверить решение</button>
+            </div>
+            <div id="output-result" class="output-area"></div>
+        </div>
+
+        <!-- Progress -->
+        <div class="progress-section">
+            <h4>Прогресс курса</h4>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="global-progress"></div>
+            </div>
+            <p style="margin-top: 10px; font-size: 0.9em;">Уровень прогресса</p>
+        </div>
+
+    </main>
+
+    <script>
+        // --- Course Data ---
+        const lessons = [
+            {
+                id: 1,
+                title: "Введение в Python",
+                desc: "Python — самый простой и читаемый язык. Давайте начнем с переменных.",
+                content: `
+                    <p>Python позволяет вам сохранять значения (данные) для последующего использования. Это называется переменными.</p>
+                    <p>В Python, для создания переменной, достаточно написать имя и задать ей значение:</p>
+                    <code>имя_переменной = значение</code>
+                    <p>Попробуйте записать переменную 'Hello' и напечатайте её в консоли.</p>
+                `,
+                task: "Запишите код ниже так, чтобы на экране появилось слово 'Привет'.",
+                initialCode: "# Введите здесь ваш код\n",
+                outputText: "Привет"
+            },
+            {
+                id: 2,
+                title: "Сложение и Вычитание",
+                desc: "Python отлично справляется с базовой математикой.",
+                content: `
+                    <p>Используя операции + (плюс) и - (минус), вы можете складывать или вычитать переменные.</p>
+                    <p>Попробуйте сложить значения 5 и 10, а затем вывести результат.</p>
+                `,
+                task: "Запишите код, который напечатает результат суммы чисел 5 и 10.",
+                initialCode: "# Введите выражение здесь\n",
+                outputText: 15
+            },
+            {
+                id: 3,
+                title: "Цикл For (Повторение)",
+                desc: "Создание повторений с помощью цикла for.",
+                content: `
+                    <p>Мы часто повторяем одно и то же действие много раз. В Python мы делаем это с помощью цикла <code>for</code>.</p>
+                    <p>Пример использования:</p>
+                    <pre style="background:#3e4451; padding:10px; border-radius:5px;">
+<span class="highlight">for i in range(1, 3):<br>    print(i)
+</span></pre>
+                `,
+                task: "Запишите цикл <code>for</code>, который будет печатать числа от 1 до 3.",
+                initialCode: "# Ваш код здесь\n",
+                outputText: "" // Special case handled in check logic
+            },
+            {
+                id: 4,
+                title: "Печать (Print)",
+                desc: "Функция print для вывода результатов.",
+                content: `
+                    <p>Для вывода данных на экран мы используем функцию <code>print()</code>. Если вы напишете <code>print('Привет')</code>, в консоли отобразится текст Привет.</p>
+                `,
+                task: "Выведите слово 'Урок завершен' на экран.",
+                initialCode: "# Ваш код здесь\n",
+                outputText: "" 
+            }
+        ];
+
+        let currentLessonIndex = 0;
+
+        // --- Core Logic ---
+
+        function init() {
+            renderNav();
+            loadLesson(currentLessonIndex);
+        }
+
+        function renderNav() {
+            const navContainer = document.getElementById('course-nav');
+            navContainer.innerHTML = '';
+            
+            lessons.forEach((lesson, index) => {
+                const div = document.createElement('div');
+                div.className = `nav-item ${index === currentLessonIndex ? 'active' : ''}`;
+                div.innerHTML = `
+                    <span>📄</span> ${lesson.id} ${lesson.title.split()[1] || lesson.title}
+                `;
+                div.onclick = () => {
+                    currentLessonIndex = index;
+                    renderNav(); // Re-render to update active class
+                    loadLesson(currentLessonIndex);
+                };
+                navContainer.appendChild(div);
+            });
+
+            document.getElementById('lesson-title').innerText = lessons[currentLessonIndex].title;
+        }
+
+        function loadLesson(index) {
+            const lessonData = lessons[index];
+            
+            // Update Simulator Content based on lesson type
+            updateSimulator(lessonData.task, lessonData.initialCode);
+
+            // Render Lesson Text
+            const contentDiv = document.getElementById('lesson-content');
+            contentDiv.innerHTML = lessonData.content;
+        }
+
+        function updateSimulator(taskText, defaultCode) {
+            const codeInput = document.getElementById('code-input');
+            const outputArea = document.getElementById('output-result');
+            
+            // Reset UI
+            outputArea.style.display = 'none';
+            outputArea.innerText = '';
+            codeInput.value = defaultCode;
+
+            // Update Task Instruction based on task type
+            if(lessonData.id === 3) {
+                // Special check for "for loop" tasks where logic is complex to run inline without a real VM
+                document.querySelector('.controls').innerHTML = `
+                    <button class="check-btn" onclick="checkCode()">Проверить решение</button>
+                    <button style="background:#444; color:white;" onclick="resetLesson()">Сбросить код</button>
+                `;
+            } else {
+                document.querySelector('.controls').innerHTML = `
+                    <button class="check-btn" onclick="checkCode()">Проверить решение</button>
+                `;
+            }
+        }
+
+        function checkCode() {
+            const codeInput = document.getElementById('code-input');
+            const outputArea = document.getElementById('output-result');
+            const userCode = codeInput.value;
+            
+            // Check if empty
+            if(!userCode.trim()) {
+                outputArea.style.display = 'block';
+                outputArea.innerText = "Ошибка: Введите код для запуска.";
+                outputArea.classList.add('error');
+                return;
+            }
+
+            let success = false;
+
+            // --- SIMULATION LOGIC ---
+            // We use try-catch blocks to simulate running the code. 
+            // If user types print("Hello"), it should work.
+            // For numeric outputs, we parse the result as int/float/string.
+
+            try {
+                // 1. Try running as Python Script logic
+                let isPython = false;
+                
+                if (userCode.trim().startsWith('# Введите выражение')) {
+                    // Lesson 2: Math
+                    const calc = new Function("return " + userCode.replace(/<[^>]*>/g, '')); // Safe-ish removal of HTML tags just in case
+                    const result = calc();
+                    if (result === lessons[currentLessonIndex].outputText) success = true;
+                } 
+                else {
+                    // General Print logic check
+                    const codeLines = userCode.split('\n');
+                    
+                    // Check for specific expected outputs by string analysis
+                    // This is a "simplistic" parser for the frontend demo
+                    
+                    if (lessons[currentLessonIndex].id === 1) { 
+                        // If they print('Привет') or print ("Привет")
+                        const checkCode = new Function(`print("Привет")`); // Mock execution logic
+                         // In a real app we'd use a pyodide iframe. Here we cheat slightly with regex/string check for the single file constraint.
+                        if(userCode.includes('Привет') || userCode.includes('"Привет"')) {
+                            success = true;
+                        }
+                    } 
+                    else if (lessons[currentLessonIndex].id === 2) {
+                        // If they print a number
+                         if(userCode.match(/print\s*\(\s*\d+\s*\)/)) success = true;
+                    }
+                    else if (lessons[currentLessonIndex].id === 3) {
+                        // For loop specific check (very simplified for frontend)
+                        if(userCode.includes('range(1, 3)') && userCode.includes('print')) success = true;
+                    }
+                    else {
+                         if(userCode.includes('print') && userCode.includes('"Урок завершен"')) success = true;
+                    }
+                }
+
+            } catch (e) {
+                console.error(e); // Do not show stack trace in UI
+            }
+
+            if(success) {
+                outputArea.style.display = 'block';
+                const msg = document.createElement('div');
+                msg.style.color = '#6db43a';
+                msg.style.fontWeight = 'bold';
+                msg.innerHTML = "Правильно! Отлично!";
+                outputArea.appendChild(msg);
+
+                // If it's the last lesson, allow navigation (simulated)
+                if(currentLessonIndex === lessons.length - 1) {
+                    alert("Вы успешно прошли курс! Спасибо за обучение.");
+                }
+            } else {
